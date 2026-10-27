@@ -5,7 +5,13 @@ plan** inside **OpenCode**, with real streaming and real tool calling.
 
 ```
 OpenCode  ──▶  local proxy (127.0.0.1:55990)  ──▶  /alpha/generate  ──▶  your $1 plan
+                    ▲
+                    └── proxy/proxy.mjs — one file, zero dependencies, Node 18+
 ```
+
+The proxy is deliberately small and readable: it translates OpenAI Chat Completions
+to the Command Code envelope and back, **including the model's reasoning stream**, so
+OpenCode shows a real thinking block instead of swallowing it.
 
 ---
 
@@ -64,8 +70,9 @@ Gemini, Mistral, Grok 4.6/4.7. Picking them returns `MODEL_NOT_IN_PLAN`.
 
 ## Requirements
 
-- Linux VPS, `x86_64` **or** `aarch64` (ARM)
+- Linux VPS (any architecture — the proxy is plain Node.js)
 - Root (or sudo)
+- **Node.js 18+** (no npm packages needed)
 - [OpenCode](https://opencode.ai) v2
 - A Command Code account with a `user_...` API key
 
@@ -88,8 +95,7 @@ sudo ./install.sh
 
 This will:
 
-- detect your CPU architecture and download the matching prebuilt binary
-- put it in `/root/cc-proxy/`
+- copy `proxy/proxy.mjs` to `/root/cc-proxy/`
 - install and start a systemd service (`commandcode-proxy`) on `127.0.0.1:55990`
 - create an empty, root-only `/root/cc-proxy/token`
 
@@ -224,6 +230,50 @@ A trailing newline ends up inside the `Authorization` header and causes a `401`.
 
 ---
 
+## Seeing the model think
+
+DeepSeek V4 Pro and friends stream their reasoning as `reasoning-delta` events. The
+stock Command Code proxies drop those events, so you only ever see the final answer.
+This proxy forwards them, and OpenCode renders them as a collapsible thinking block.
+
+Two things have to line up:
+
+**1. The proxy must emit the reasoning.** It does, in the OpenAI-style
+`reasoning_content` field:
+
+```jsonc
+{"choices":[{"delta":{"reasoning_content":"Let me compute 17*23..."}}]}
+```
+
+**2. The model must declare where to read it.** In `~/.config/opencode/opencode.json`:
+
+```jsonc
+"compatibility": {
+  "reasoningField": "reasoning_content",
+  "maxTokensField": "max_tokens"
+}
+```
+
+The `config/opencode.json` in this repo already sets this on every model. Without it,
+OpenCode sees the field but does not treat it as thinking.
+
+Verify it end to end:
+
+```bash
+# the proxy log prints reasoning characters per request
+journalctl -u commandcode-proxy -f
+# then ask something in OpenCode; you should see e.g.
+#   [done] deepseek/deepseek-v4-pro | 65 text / 105 reasoning / 0 tools | stop
+```
+
+If `reasoning` is `0` there, your model simply did not think much — `DeepSeek Flash`
+reasons far less than `DeepSeek Pro`.
+
+> Reasoning tokens are billed as **output**. `DeepSeek Pro` can spend hundreds of
+> thinking tokens on a trivial question. That is why it drains credits faster.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Cause / fix |
@@ -233,6 +283,8 @@ A trailing newline ends up inside the `Authorization` header and causes a `401`.
 | `400` on every request | Proxy is stale. Re-run `install.sh` to update the binary. |
 | `connection refused` on 55990 | `systemctl restart commandcode-proxy` |
 | Hangs / `context length` | Prompt too large. Switch to a 1M-context model. |
+| No thinking block shown | Check `compatibility.reasoningField` is `reasoning_content`, then `/reload`. Also: Flash reasons much less than Pro. |
+| Thinking shown as normal text | Proxy too old — this repo's proxy sends `reasoning_content`, older ones dump it into `content`. |
 | Credits draining fast | You are on `DeepSeek Pro`. Switch to `DeepSeek Flash`. |
 
 Useful commands:
@@ -345,5 +397,10 @@ OpenCode at `https://api.commandcode.ai/provider/v1` directly — no proxy neede
 
 ## Credits
 
-Proxy binary: [dev2k6/command-code-proxy-server](https://github.com/dev2k6/command-code-proxy-server) (MIT).
-Protocol notes: [safzanpirani/pi-commandcode-provider](https://github.com/safzanpirani/pi-commandcode-provider).
+`proxy/proxy.mjs` was written for this repo, informed by:
+
+- [dev2k6/command-code-proxy-server](https://github.com/dev2k6/command-code-proxy-server) (MIT) — translation approach
+- [safzanpirani/pi-commandcode-provider](https://github.com/safzanpirani/pi-commandcode-provider) — `/alpha/generate` wire-protocol documentation
+
+The upstream protocol is undocumented and reverse-engineered; see their docs when it
+drifts.

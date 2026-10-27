@@ -7,78 +7,53 @@
 # Optional environment variables:
 #   PREFIX=/root/cc-proxy   install location
 #   PORT=55990              local port
+#
+# Requires Node.js 18+ (no npm packages are needed).
 
 set -euo pipefail
 
 PREFIX="${PREFIX:-/root/cc-proxy}"
 PORT="${PORT:-55990}"
-UPSTREAM="dev2k6/command-code-proxy-server"
-RAW="https://raw.githubusercontent.com/${UPSTREAM}/main/bin"
 
 SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 say() { printf '\n\033[1m%s\033[0m\n' "$*"; }
 die() { echo "ERROR: $*" >&2; exit 1; }
 
+# --- requirements -----------------------------------------------------------
+command -v node >/dev/null || die "Node.js is required (18+). Install it, then re-run."
+NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
+[ "$NODE_MAJOR" -ge 18 ] || die "Node.js 18+ required, found $(node -v)"
 command -v curl >/dev/null || die "curl is required"
 
-# --- pick the right prebuilt binary -----------------------------------------
-case "$(uname -m)" in
-  aarch64|arm64) BIN="command-code-proxy-arm64" ;;
-  x86_64|amd64)  BIN="command-code-proxy" ;;
-  *) die "unsupported CPU architecture: $(uname -m)" ;;
-esac
+[ -f "$SELF_DIR/proxy/proxy.mjs" ] || die "proxy/proxy.mjs missing — run this from the cloned repo"
 
-say "1/4  Installing the proxy ($BIN) into $PREFIX"
+say "1/4  Installing into $PREFIX (Node $(node -v))"
 mkdir -p "$PREFIX"
 
-# Download beside the target, then atomically rename. Overwriting a *running*
-# binary directly fails with ETXTBSY ("Text file busy").
-TMP="$PREFIX/.command-code-proxy.new"
-rm -f "$TMP"
-curl -fsSL -o "$TMP" "$RAW/$BIN" || die "download failed"
-chmod +x "$TMP"
-mv -f "$TMP" "$PREFIX/command-code-proxy"
-"$PREFIX/command-code-proxy" -version
+# Copy beside the old file, then rename: overwriting a running script is fine,
+# but this keeps the swap atomic.
+install -m 644 "$SELF_DIR/proxy/proxy.mjs" "$PREFIX/.proxy.mjs.new"
+mv -f "$PREFIX/.proxy.mjs.new" "$PREFIX/proxy.mjs"
+echo "Installed $PREFIX/proxy.mjs"
 
-# --- key file ---------------------------------------------------------------
-if [ ! -f "$PREFIX/token" ]; then
-  : > "$PREFIX/token"
-  chmod 600 "$PREFIX/token"
-  echo "Created empty $PREFIX/token"
-fi
-
-# --- helper script ----------------------------------------------------------
 if [ -f "$SELF_DIR/set-key.sh" ]; then
   install -m 755 "$SELF_DIR/set-key.sh" "$PREFIX/set-key.sh"
   echo "Installed $PREFIX/set-key.sh"
 fi
 
+if [ ! -f "$PREFIX/token" ]; then
+  : > "$PREFIX/token"
+  chmod 600 "$PREFIX/token"
+  echo "Created empty $PREFIX/token (mode 600)"
+fi
+
 # --- systemd ----------------------------------------------------------------
 if command -v systemctl >/dev/null && [ -d /etc/systemd/system ]; then
   say "2/4  Installing systemd service"
-  if [ -f "$SELF_DIR/systemd/commandcode-proxy.service" ]; then
-    sed -e "s#@PREFIX@#$PREFIX#g" -e "s#@PORT@#$PORT#g" \
-      "$SELF_DIR/systemd/commandcode-proxy.service" \
-      > /etc/systemd/system/commandcode-proxy.service
-  else
-    cat > /etc/systemd/system/commandcode-proxy.service <<EOF
-[Unit]
-Description=Command Code -> OpenAI-compatible proxy (for OpenCode)
-After=network-online.target
-Wants=network-online.target
-
-[Service]
-Type=simple
-ExecStart=$PREFIX/command-code-proxy -host 127.0.0.1 -port $PORT
-Restart=always
-RestartSec=3
-NoNewPrivileges=true
-
-[Install]
-WantedBy=multi-user.target
-EOF
-  fi
+  sed -e "s#@PREFIX@#$PREFIX#g" -e "s#@PORT@#$PORT#g" \
+    "$SELF_DIR/systemd/commandcode-proxy.service" \
+    > /etc/systemd/system/commandcode-proxy.service
 
   systemctl daemon-reload
   systemctl enable commandcode-proxy >/dev/null 2>&1 || true
@@ -87,7 +62,7 @@ EOF
   systemctl is-active commandcode-proxy
 else
   say "2/4  No systemd found — start it manually:"
-  echo "  nohup $PREFIX/command-code-proxy -host 127.0.0.1 -port $PORT &"
+  echo "  PORT=$PORT nohup node $PREFIX/proxy.mjs &"
 fi
 
 # --- health check -----------------------------------------------------------
@@ -98,7 +73,7 @@ for i in 1 2 3 4 5; do
     break
   fi
   sleep 1
-  [ "$i" = 5 ] && die "proxy did not answer on 127.0.0.1:$PORT"
+  [ "$i" = 5 ] && die "proxy did not answer on 127.0.0.1:$PORT — check: journalctl -u commandcode-proxy -n 30"
 done
 
 say "4/4  Done"

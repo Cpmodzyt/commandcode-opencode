@@ -28,7 +28,8 @@
           },
           "compatibility": {
             "maxTokensField": "max_tokens",
-            "streamUsage": false
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
           }
         },
         "deepseek/deepseek-v4-pro": {
@@ -48,7 +49,8 @@
           },
           "compatibility": {
             "maxTokensField": "max_tokens",
-            "streamUsage": false
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
           }
         },
         "moonshotai/Kimi-K2.7-Code": {
@@ -68,7 +70,8 @@
           },
           "compatibility": {
             "maxTokensField": "max_tokens",
-            "streamUsage": false
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
           }
         },
         "zai-org/GLM-5.2": {
@@ -88,7 +91,8 @@
           },
           "compatibility": {
             "maxTokensField": "max_tokens",
-            "streamUsage": false
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
           }
         },
         "MiniMaxAI/MiniMax-M3": {
@@ -108,7 +112,8 @@
           },
           "compatibility": {
             "maxTokensField": "max_tokens",
-            "streamUsage": false
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
           }
         },
         "Qwen/Qwen3.8-Max": {
@@ -128,47 +133,87 @@
           },
           "compatibility": {
             "maxTokensField": "max_tokens",
-            "streamUsage": false
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
           }
         },
         "zai-org/GLM-5.3": {
-          "name": "GLM-5.3 ($1)"
+          "name": "GLM-5.3 ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "moonshotai/Kimi-K3": {
-          "name": "Kimi K3 ($1)"
+          "name": "Kimi K3 ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "stepfun/Step-3.7-Flash": {
-          "name": "Step 3.7 Flash ($1)"
+          "name": "Step 3.7 Flash ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "stepfun/Step-5-Preview": {
-          "name": "Step 5 Preview ($1)"
+          "name": "Step 5 Preview ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "tencent/hy3-paid": {
-          "name": "Hy3 ($1)"
+          "name": "Hy3 ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "tencent/hy4-preview": {
-          "name": "Hy4 Preview ($1)"
+          "name": "Hy4 Preview ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "thinkingmachines/inkling": {
-          "name": "Inkling ($1)"
+          "name": "Inkling ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "thinkingmachines/inkling-small": {
-          "name": "Inkling Small ($1)"
+          "name": "Inkling Small ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "nvidia/nemotron-3-ultra-550b-a55b": {
-          "name": "Nemotron 3 Ultra ($1)"
+          "name": "Nemotron 3 Ultra ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "meta/muse-spark-1.2-contributor": {
-          "name": "Muse Spark 1.2 ($1)"
+          "name": "Muse Spark 1.2 ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "meta/muse-spark-1.3-contributor": {
-          "name": "Muse Spark 1.3 ($1)"
+          "name": "Muse Spark 1.3 ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "gpt-5.6-luna": {
-          "name": "GPT-5.6 Luna ($1)"
+          "name": "GPT-5.6 Luna ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "xai/grok-4.5": {
-          "name": "Grok 4.5 ($1)"
+          "name": "Grok 4.5 ($1)",
+          "compatibility": {
+            "reasoningField": "reasoning_content"
+          }
         },
         "google/gemini-3.1-flash-lite": {
           "disabled": true

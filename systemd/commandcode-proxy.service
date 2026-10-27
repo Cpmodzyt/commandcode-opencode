@@ -1,12 +1,15 @@
 [Unit]
 Description=Command Code -> OpenAI-compatible proxy (for OpenCode)
-Documentation=https://github.com/dev2k6/command-code-proxy-server
+Documentation=https://github.com/Cpmodzyt/commandcode-opencode
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=@PREFIX@/command-code-proxy -host 127.0.0.1 -port @PORT@
+WorkingDirectory=@PREFIX@
+Environment=PORT=@PORT@
+Environment=COMMAND_CODE_TOKEN_FILE=@PREFIX@/token
+ExecStart=/usr/bin/env node @PREFIX@/proxy.mjs
 Restart=always
 RestartSec=3
 NoNewPrivileges=true
