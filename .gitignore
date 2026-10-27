@@ -1,0 +1,14 @@
+# secrets — never commit these
+token
+*.token
+.env
+.env.*
+auth.json
+.commandcode/
+
+# local junk
+*.log
+dump/
+data/
+node_modules/
+.DS_Store

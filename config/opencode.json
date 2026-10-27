@@ -1,0 +1,333 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "providers": {
+    "commandcode": {
+      "name": "CommandCode $1",
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "http://127.0.0.1:55990/v1",
+        "apiKey": "{file:/root/cc-proxy/token}",
+        "headerTimeout": 120000,
+        "chunkTimeout": 600000
+      },
+      "models": {
+        "deepseek/deepseek-v4.1-flash": {
+          "name": "DeepSeek Flash ($1)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false
+          }
+        },
+        "deepseek/deepseek-v4-pro": {
+          "name": "DeepSeek Pro ($1)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false
+          }
+        },
+        "moonshotai/Kimi-K2.7-Code": {
+          "name": "Kimi K2.7 Code ($1)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 256000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false
+          }
+        },
+        "zai-org/GLM-5.2": {
+          "name": "GLM-5.2 ($1)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false
+          }
+        },
+        "MiniMaxAI/MiniMax-M3": {
+          "name": "MiniMax M3 ($1)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false
+          }
+        },
+        "Qwen/Qwen3.8-Max": {
+          "name": "Qwen3.8 Max ($1)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false
+          }
+        },
+        "zai-org/GLM-5.3": {
+          "name": "GLM-5.3 ($1)"
+        },
+        "moonshotai/Kimi-K3": {
+          "name": "Kimi K3 ($1)"
+        },
+        "stepfun/Step-3.7-Flash": {
+          "name": "Step 3.7 Flash ($1)"
+        },
+        "stepfun/Step-5-Preview": {
+          "name": "Step 5 Preview ($1)"
+        },
+        "tencent/hy3-paid": {
+          "name": "Hy3 ($1)"
+        },
+        "tencent/hy4-preview": {
+          "name": "Hy4 Preview ($1)"
+        },
+        "thinkingmachines/inkling": {
+          "name": "Inkling ($1)"
+        },
+        "thinkingmachines/inkling-small": {
+          "name": "Inkling Small ($1)"
+        },
+        "nvidia/nemotron-3-ultra-550b-a55b": {
+          "name": "Nemotron 3 Ultra ($1)"
+        },
+        "meta/muse-spark-1.2-contributor": {
+          "name": "Muse Spark 1.2 ($1)"
+        },
+        "meta/muse-spark-1.3-contributor": {
+          "name": "Muse Spark 1.3 ($1)"
+        },
+        "gpt-5.6-luna": {
+          "name": "GPT-5.6 Luna ($1)"
+        },
+        "xai/grok-4.5": {
+          "name": "Grok 4.5 ($1)"
+        },
+        "google/gemini-3.1-flash-lite": {
+          "disabled": true
+        },
+        "gpt-6.1-terra": {
+          "disabled": true
+        },
+        "google/gemini-4-argon": {
+          "disabled": true
+        },
+        "meta/muse-wonder-1.0": {
+          "disabled": true
+        },
+        "claude-haiku-5-5": {
+          "disabled": true
+        },
+        "mistral/mistral-large-4": {
+          "disabled": true
+        },
+        "gpt-6.1-sol": {
+          "disabled": true
+        },
+        "claude-sonnet-5-5": {
+          "disabled": true
+        },
+        "claude-opus-5-5": {
+          "disabled": true
+        },
+        "gpt-6-sol": {
+          "disabled": true
+        },
+        "gpt-6-luna": {
+          "disabled": true
+        },
+        "xai/grok-4.7": {
+          "disabled": true
+        },
+        "gpt-6-astra": {
+          "disabled": true
+        },
+        "google/gemini-3.8-flash": {
+          "disabled": true
+        },
+        "meta/muse-spark-1.3": {
+          "disabled": true
+        },
+        "claude-fable-5-1": {
+          "disabled": true
+        },
+        "google/gemini-3.7-flash": {
+          "disabled": true
+        },
+        "xai/grok-4.6": {
+          "disabled": true
+        },
+        "meta/muse-spark-1.2": {
+          "disabled": true
+        },
+        "claude-opus-5": {
+          "disabled": true
+        },
+        "google/gemini-3.5-flash-lite": {
+          "disabled": true
+        },
+        "google/gemini-3.6-flash": {
+          "disabled": true
+        },
+        "gpt-5.6-terra": {
+          "disabled": true
+        },
+        "gpt-5.6-sol": {
+          "disabled": true
+        },
+        "claude-sonnet-5": {
+          "disabled": true
+        },
+        "sakana/fugu-ultra": {
+          "disabled": true
+        },
+        "claude-fable-5": {
+          "disabled": true
+        },
+        "claude-opus-4-8": {
+          "disabled": true
+        },
+        "google/gemini-3.5-flash": {
+          "disabled": true
+        },
+        "gpt-5.5": {
+          "disabled": true
+        },
+        "claude-opus-4-7": {
+          "disabled": true
+        },
+        "meta/muse-spark-1.1": {
+          "disabled": true
+        },
+        "gpt-5.4-mini": {
+          "disabled": true
+        },
+        "gpt-5.4": {
+          "disabled": true
+        },
+        "claude-sonnet-4-6": {
+          "disabled": true
+        },
+        "gpt-5.3-codex": {
+          "disabled": true
+        },
+        "claude-haiku-4-5-20251001": {
+          "disabled": true
+        },
+        "deepseek/deepseek-v4-flash": {
+          "disabled": true
+        },
+        "deepseek/deepseek-v4-flash-fast": {
+          "disabled": true
+        },
+        "deepseek/deepseek-v4.1-flash-fast": {
+          "disabled": true
+        },
+        "deepseek/deepseek-v4-flash-vision-exp": {
+          "disabled": true
+        },
+        "zai-org/GLM-5.2-Fast": {
+          "disabled": true
+        },
+        "z-ai/glm-5.3-flash": {
+          "disabled": true
+        },
+        "z-ai/glm-5.3-flashx": {
+          "disabled": true
+        },
+        "MiniMaxAI/MiniMax-M2.5": {
+          "disabled": true
+        },
+        "MiniMaxAI/MiniMax-M2.7": {
+          "disabled": true
+        },
+        "Qwen/Qwen3.8-27B": {
+          "disabled": true
+        },
+        "Qwen/Qwen3.8-Flash": {
+          "disabled": true
+        },
+        "Qwen/Qwen3.8-Max-0902": {
+          "disabled": true
+        },
+        "Qwen/Qwen3.8-Omni-Flash": {
+          "disabled": true
+        },
+        "moonshotai/Kimi-K2.7-Code-Highspeed": {
+          "disabled": true
+        },
+        "stepfun/Step-3.5-Flash": {
+          "disabled": true
+        }
+      }
+    }
+  },
+  "model": "commandcode/deepseek/deepseek-v4.1-flash"
+}
