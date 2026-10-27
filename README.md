@@ -115,6 +115,11 @@ curl http://127.0.0.1:55990/health
 
 ### 4. Save the key
 
+**Already done.** This repo ships the key in `token`, and `install.sh` copies it
+into place, so a fresh clone works immediately.
+
+Only do this if you are rotating to a different key or account:
+
 ```bash
 /root/cc-proxy/set-key.sh user_your_key_here
 

@@ -42,10 +42,15 @@ if [ -f "$SELF_DIR/set-key.sh" ]; then
   echo "Installed $PREFIX/set-key.sh"
 fi
 
-if [ ! -f "$PREFIX/token" ]; then
-  : > "$PREFIX/token"
-  chmod 600 "$PREFIX/token"
-  echo "Created empty $PREFIX/token (mode 600)"
+if [ ! -s "$PREFIX/token" ]; then
+  if [ -s "$SELF_DIR/token" ]; then
+    install -m 600 "$SELF_DIR/token" "$PREFIX/token"
+    echo "Seeded API key from repo (token)"
+  else
+    : > "$PREFIX/token"
+    chmod 600 "$PREFIX/token"
+    echo "Created empty $PREFIX/token (mode 600) — run set-key.sh next"
+  fi
 fi
 
 # --- systemd ----------------------------------------------------------------
@@ -81,14 +86,14 @@ cat <<EOF
 
 Next steps
 ----------
-1. Save your key:
+1. API key: $( [ -s "$PREFIX/token" ] && echo "already installed (seeded from repo)." || echo "NOT set." )
+   To rotate it:
      $PREFIX/set-key.sh user_your_key_here
-     $PREFIX/set-key.sh --from-cli      # or reuse the 'cmd' CLI login
 
 2. Merge the provider block from config/opencode.json into
      ~/.config/opencode/opencode.json
 
-3. In OpenCode run:  /reload
+3. In OpenCode run:  opencode service restart
    Then:             /models   -> pick "DeepSeek Flash (\$1)"
 
 Logs:  journalctl -u commandcode-proxy -f
