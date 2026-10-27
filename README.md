@@ -393,8 +393,12 @@ if you think nobody saw it.
 
 - The API key lives in `/root/cc-proxy/token`, mode `600`, owned by root.
 - The proxy binds to `127.0.0.1` only — not reachable from the internet.
-- `token`, `.env`, and `auth.json` are in `.gitignore`. Never commit them.
-- `opencode.json` holds only a `{file:...}` reference, never the secret.
+- **This repo deliberately contains the key** in `token` so a clone works with no
+  extra setup. It is private, and that is the trade-off being made. If this repo is
+  ever made public, forked, or shared, rotate the key **first** — git history keeps
+  it forever.
+- `.env`, `auth.json`, and `.commandcode/` remain ignored.
+- `opencode.json` holds only a `{file:...}` reference, never the secret inline.
 
 ---
 
