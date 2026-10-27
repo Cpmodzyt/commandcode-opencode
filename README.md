@@ -206,18 +206,34 @@ opencode run -m commandcode/deepseek/deepseek-v4-pro "why does this crash"
 
 ```bash
 /root/cc-proxy/set-key.sh user_NEW_KEY
+opencode service restart
 ```
 
-then `/reload` in OpenCode.
+`opencode service restart` is required, not optional. OpenCode resolves the
+`{file:...}` reference **once at startup** and caches the value in the running
+server, so `/reload` can leave it using the old key. Symptom: every request works,
+but credits keep draining from the account you thought you left.
+
+To prove which account is live:
+
+```bash
+curl -s https://api.commandcode.ai/alpha/whoami \
+  -H "Authorization: Bearer $(cat /root/cc-proxy/token)" | grep -o '"email":"[^"]*"'
+```
 
 Switching to a different Command Code account:
 
 ```bash
 cmd login
 /root/cc-proxy/set-key.sh --from-cli
+opencode service restart
 ```
 
 Credits belong to the **account**, not the machine.
+
+> `--from-cli` reads `~/.commandcode/auth.json`. If the CLI is still logged into
+> an old account, that flag will silently switch you **back** to it. Check with
+> the `whoami` command above.
 
 Manual equivalent:
 

@@ -81,4 +81,9 @@ fi
 
 echo "OK  working."
 echo
-echo "Now reload it in OpenCode: run  /reload  (or reopen opencode)"
+echo "IMPORTANT: OpenCode reads this file once at startup, so a /reload may not"
+echo "pick it up. Restart the background service to be sure:"
+echo
+echo "    opencode service restart"
+echo
+echo "(then reopen opencode)"
