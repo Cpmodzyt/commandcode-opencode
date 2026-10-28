@@ -46,7 +46,7 @@ which is what this repo sets up.
 
 ## What you get
 
-**22 models** — 19 paid ones verified on the Go plan, plus **3 that cost $0**.
+**23 models** — 20 paid ones verified on the Go plan, plus **3 that cost $0**.
 
 ### Free models (0 credits)
 
@@ -270,6 +270,47 @@ chmod 600 /root/cc-proxy/token
 ```
 
 A trailing newline ends up inside the `Authorization` header and causes a `401`.
+
+---
+
+## Image input (vision)
+
+13 of the models accept images. I verified each by sending a solid-red PNG and asking
+for the colour — the ones below answered correctly.
+
+| Model | Verified |
+| --- | --- |
+| `DeepSeek Flash ($1)` — V4.1 Flash | ✅ |
+| `DeepSeek Vision ($1)` — V4 Flash Vision Exp | ✅ |
+| `Kimi K2.7 Code ($1)` / `Kimi K3 ($1)` | ✅ |
+| `Qwen3.8 Max ($1)` | ✅ |
+| `MiniMax M3 ($1)` | ✅ |
+| `Step 3.7 Flash ($1)` / `Step 5 Preview ($1)` | ✅ |
+| `Grok 4.5 ($1)` | ✅ |
+| `GPT-5.6 Luna ($1)` | ✅ |
+| `Muse Spark 1.2 / 1.3 ($1)` | ✅ |
+| `Inkling ($1)` | not verified (provider was down) — marked capable per its docs |
+
+**No image support** (they will reply "no image was provided"):
+
+`DeepSeek Pro`, `GLM-5.2`, `GLM-5.3`, `Hy3`, `Hy4 Preview`, `Nemotron 3 Ultra`,
+`Inkling Small`, and all three free models (`Beam`, `Glyph`, `Laguna`).
+
+OpenCode decides whether to show an attach button from the model's declared
+`capabilities.input`. If a model is declared text-only, you cannot attach an image
+even though the API would accept one:
+
+```jsonc
+"capabilities": {
+  "tools": true,
+  "input": ["text", "image"],   // <-- add "image"
+  "output": ["text"]
+}
+```
+
+> If a model is missing from `capabilities` entirely, OpenCode **assumes** text *and*
+> image support. That is a fallback, not detection — which is why every model in
+> `config/opencode.json` declares capabilities explicitly.
 
 ---
 
