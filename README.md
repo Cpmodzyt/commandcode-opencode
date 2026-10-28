@@ -379,6 +379,30 @@ reasons far less than `DeepSeek Pro`.
 
 ---
 
+## Keep sessions lean
+
+Screenshots read into a session are stored as **base64** and re-sent on every turn.
+A handful of them turns a 5 KB request into **20 MB+**, which takes 20–30 s and is
+slow enough that OpenCode aborts the step (`Step interrupted`).
+
+Compaction will not save you here: it triggers on **token** count, and an image is
+worth far fewer tokens than its byte size suggests. A session can sit at 300k
+tokens while sending 25 MB every turn.
+
+Rules of thumb:
+
+- Start a new session per task — don't continue a 200-message one.
+- `config/opencode.json` caps images at 768 KB / 1280 px (`media.image`).
+- Force compaction on a bloated session (runs at the next prompt):
+
+```bash
+opencode api post /api/session/<session-id>/compact --data '{}'
+```
+
+Earlier messages stay in the database; compaction only changes what gets **sent**.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Cause / fix |
@@ -393,6 +417,7 @@ reasons far less than `DeepSeek Pro`.
 | Credits draining fast | You are on `DeepSeek Pro`. Switch to `DeepSeek Flash`. |
 | `Missing required parameter: messages[N].reasoning_content` on turn 2+ | The proxy drops reasoning when echoing assistant messages back. Command Code requires it. This repo's proxy handles it; stock proxies don't. |
 | `429 weekly usage limit` but your credits look fine | A stale `/connect` credential is shadowing the config key. See "Do not use `/connect` for this provider" above. |
+| Session stalls, then `Step interrupted` mid-task | The session has accumulated base64 screenshots. Requests reach 20–25 MB, taking 20–30 s, and the step gets aborted. Compaction is **token**-based, so images barely move the counter and auto-compaction never fires. Start a new session, or force it: `opencode api post /api/session/<id>/compact --data '{}'` (runs at the next prompt). |
 | Free model returns `at capacity` | `Laguna FREE` is provider-limited. Retry or use `Beam FREE`. |
 
 Useful commands:
