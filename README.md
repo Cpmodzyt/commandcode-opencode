@@ -329,6 +329,8 @@ reasons far less than `DeepSeek Pro`.
 | No thinking block shown | Check `compatibility.reasoningField` is `reasoning_content`, then `/reload`. Also: Flash reasons much less than Pro. |
 | Thinking shown as normal text | Proxy too old — this repo's proxy sends `reasoning_content`, older ones dump it into `content`. |
 | Credits draining fast | You are on `DeepSeek Pro`. Switch to `DeepSeek Flash`. |
+| `Missing required parameter: messages[N].reasoning_content` on turn 2+ | The proxy drops reasoning when echoing assistant messages back. Command Code requires it. This repo's proxy handles it; stock proxies don't. |
+| Free model returns `at capacity` | `Laguna FREE` is provider-limited. Retry or use `Beam FREE`. |
 
 Useful commands:
 
