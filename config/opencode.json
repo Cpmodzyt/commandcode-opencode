@@ -215,6 +215,69 @@
             "reasoningField": "reasoning_content"
           }
         },
+        "reflection/beam:free": {
+          "name": "Beam FREE (reasoning)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 1048576,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
+          }
+        },
+        "stealth/glyph-cluster:free": {
+          "name": "Glyph FREE (stealth)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 256000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
+          }
+        },
+        "poolside/laguna-s-2.1-free": {
+          "name": "Laguna FREE (agentic)",
+          "capabilities": {
+            "tools": true,
+            "input": [
+              "text"
+            ],
+            "output": [
+              "text"
+            ]
+          },
+          "limit": {
+            "context": 256000,
+            "output": 32768
+          },
+          "compatibility": {
+            "maxTokensField": "max_tokens",
+            "streamUsage": false,
+            "reasoningField": "reasoning_content"
+          }
+        },
         "google/gemini-3.1-flash-lite": {
           "disabled": true
         },

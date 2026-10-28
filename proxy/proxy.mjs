@@ -125,6 +125,14 @@ function toModelMessages(messages) {
     }
 
     const parts = [];
+    // Command Code requires the model's own reasoning to be echoed back on every
+    // prior assistant message. Drop it and the next turn fails with:
+    //   Missing required parameter: 'messages[N].reasoning_content'
+    const reasoning = m.reasoning_content ?? m.reasoning ?? m.reasoning_text;
+    if (m.role === "assistant" && typeof reasoning === "string") {
+      parts.push({ type: "reasoning", text: reasoning });
+    }
+
     if (m.role === "assistant" && Array.isArray(m.tool_calls)) {
       const txt = textOf(m.content);
       if (txt) parts.push({ type: "text", text: txt });
@@ -612,6 +620,10 @@ const MODELS = [
   "tencent/hy4-preview",
   "thinkingmachines/inkling",
   "nvidia/nemotron-3-ultra-550b-a55b",
+  // free on every plan — cost 0 credits
+  "reflection/beam:free",
+  "stealth/glyph-cluster:free",
+  "poolside/laguna-s-2.1-free",
 ];
 
 /* ----------------------------------------------------------------- server -- */

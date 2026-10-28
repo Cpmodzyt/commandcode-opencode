@@ -1,19 +1,12 @@
-# ============================================================================
-# NOTE: `token` is deliberately NOT ignored in this repo.
-# This is a PRIVATE repo and the Command Code key is committed on purpose so a
-# clone works without extra setup.
-#
-# If this repo is ever made public, forked, or shared: ROTATE THE KEY FIRST.
-#   https://commandcode.ai/settings/billing
-#   /root/cc-proxy/set-key.sh user_NEW_KEY
-# ============================================================================
-
-# other secrets
+# secrets — never commit these
+token
 *.token
 .env
 .env.*
 auth.json
 .commandcode/
+*.pem
+*.key
 
 # local junk
 *.log

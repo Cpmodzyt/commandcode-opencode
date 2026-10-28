@@ -86,8 +86,8 @@ cat <<EOF
 
 Next steps
 ----------
-1. API key: $( [ -s "$PREFIX/token" ] && echo "already installed (seeded from repo)." || echo "NOT set." )
-   To rotate it:
+1. API key: $( [ -s "$PREFIX/token" ] && echo "already set." || echo "NOT set." )
+   Set or rotate it:
      $PREFIX/set-key.sh user_your_key_here
 
 2. Merge the provider block from config/opencode.json into

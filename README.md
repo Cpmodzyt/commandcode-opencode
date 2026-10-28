@@ -46,7 +46,29 @@ which is what this repo sets up.
 
 ## What you get
 
-19 models, each verified to work on the Go plan:
+**22 models** — 19 paid ones verified on the Go plan, plus **3 that cost $0**.
+
+### Free models (0 credits)
+
+These are free on every Command Code plan. Verified: a full request moved the credit
+counter by exactly `0.000000`.
+
+| Model | Context | Notes |
+| --- | --- | --- |
+| `Beam FREE (reasoning)` — `reflection/beam:free` | 1M | reasoning model, native tool calls |
+| `Glyph FREE (stealth)` — `stealth/glyph-cluster:free` | 256K | early-access stealth model, native tool calls |
+| `Laguna FREE (agentic)` — `poolside/laguna-s-2.1-free` | 256K | open-weight agentic coder, occasionally at capacity |
+
+All three were tested end-to-end inside OpenCode running shell commands.
+
+> `Glyph` bills reasoning tokens but does not stream them, so you get no thinking
+> block from it even though it is clearly reasoning. That is the model's quirk, not
+> a proxy bug. `Beam` does stream reasoning.
+>
+> Free models also skip the ~7.6K-token prompt overhead cost, which makes them the
+> cheapest way to burn through boilerplate refactors, test generation, and file reads.
+
+### Paid models (Go plan)
 
 | Model | Notes |
 | --- | --- |
@@ -65,6 +87,9 @@ which is what this repo sets up.
 
 **Not** available on Go (hidden by the included config): Claude, GPT (except Luna),
 Gemini, Mistral, Grok 4.6/4.7. Picking them returns `MODEL_NOT_IN_PLAN`.
+
+> `typesafe/jev` is technically free apart from input tokens, but it is a
+> probability/decision endpoint, not a chat model — it cannot drive OpenCode.
 
 ---
 
@@ -115,10 +140,7 @@ curl http://127.0.0.1:55990/health
 
 ### 4. Save the key
 
-**Already done.** This repo ships the key in `token`, and `install.sh` copies it
-into place, so a fresh clone works immediately.
-
-Only do this if you are rotating to a different key or account:
+**Required.** No credential is stored in this repo.
 
 ```bash
 /root/cc-proxy/set-key.sh user_your_key_here
@@ -398,12 +420,11 @@ if you think nobody saw it.
 
 - The API key lives in `/root/cc-proxy/token`, mode `600`, owned by root.
 - The proxy binds to `127.0.0.1` only — not reachable from the internet.
-- **This repo deliberately contains the key** in `token` so a clone works with no
-  extra setup. It is private, and that is the trade-off being made. If this repo is
-  ever made public, forked, or shared, rotate the key **first** — git history keeps
-  it forever.
-- `.env`, `auth.json`, and `.commandcode/` remain ignored.
+- `token`, `.env`, `auth.json`, and `.commandcode/` are gitignored. **No credential
+  is stored in this repo.**
 - `opencode.json` holds only a `{file:...}` reference, never the secret inline.
+- The proxy takes the key from the request header, so it never stores it in memory
+  or writes it to logs.
 
 ---
 
