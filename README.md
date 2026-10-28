@@ -262,6 +262,27 @@ Credits belong to the **account**, not the machine.
 > an old account, that flag will silently switch you **back** to it. Check with
 > the `whoami` command above.
 
+### ⚠️ Do not use `/connect` for this provider
+
+`set-key.sh` is the only way to change the key. If you ever run `/connect` and
+paste a key, OpenCode stores it in its own credential database — and a **stored
+credential silently overrides** the `{file:...}` value in your config.
+
+The symptom is nasty: credits look fine, direct `curl` works, but OpenCode keeps
+returning another account's error, e.g.
+
+```
+429 You've reached your weekly usage limit for your plan.
+```
+
+Check for a shadowing credential and remove it:
+
+```bash
+opencode auth list
+opencode auth logout commandcode CommandCode
+opencode service restart
+```
+
 Manual equivalent:
 
 ```bash
@@ -371,6 +392,7 @@ reasons far less than `DeepSeek Pro`.
 | Thinking shown as normal text | Proxy too old — this repo's proxy sends `reasoning_content`, older ones dump it into `content`. |
 | Credits draining fast | You are on `DeepSeek Pro`. Switch to `DeepSeek Flash`. |
 | `Missing required parameter: messages[N].reasoning_content` on turn 2+ | The proxy drops reasoning when echoing assistant messages back. Command Code requires it. This repo's proxy handles it; stock proxies don't. |
+| `429 weekly usage limit` but your credits look fine | A stale `/connect` credential is shadowing the config key. See "Do not use `/connect` for this provider" above. |
 | Free model returns `at capacity` | `Laguna FREE` is provider-limited. Retry or use `Beam FREE`. |
 
 Useful commands:
