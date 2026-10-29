@@ -670,7 +670,13 @@ const server = http.createServer((req, res) => {
     }
 
     const auth = (req.headers.authorization || "").replace(/^Bearer\s+/i, "").trim();
-    const token = auth || readFallbackToken();
+    const fileToken = readFallbackToken();
+    // Prefer the token file: clients (OpenCode) cache the apiKey at startup, so a
+    // stale client header would silently keep using a revoked key.
+    const token = fileToken || auth;
+    log(
+      `[auth] source=${fileToken ? "file" : "client"} client=${!auth ? "none" : auth === token ? "ok" : "differs"}`,
+    );
     if (!token) {
       res.writeHead(401, { ...CORS, "Content-Type": "application/json" });
       return res.end(

@@ -292,6 +292,21 @@ chmod 600 /root/cc-proxy/token
 
 A trailing newline ends up inside the `Authorization` header and causes a `401`.
 
+### Why the proxy ignores your `Authorization` header
+
+OpenCode resolves `{file:...}` **once, at startup**. If you rotate the key while a
+session is running, that session keeps sending the *old* key to the proxy — and
+Command Code answers `401 Invalid 'Authorization' header or token`, even though
+`set-key.sh` just proved the new key works.
+
+So the proxy prefers `/root/cc-proxy/token` and only falls back to the client's
+header when that file is missing. Rotating the key is then enough; no client
+restart required. Each request logs which one won:
+
+```
+[auth] source=file client=differs   ← client sent a stale key, file used instead
+```
+
 ---
 
 ## Image input (vision)
@@ -407,7 +422,7 @@ Earlier messages stay in the database; compaction only changes what gets **sent*
 
 | Symptom | Cause / fix |
 | --- | --- |
-| `401 UNAUTHORIZED` | Bad or revoked key. Re-run `set-key.sh`. |
+| `401 UNAUTHORIZED` / `Invalid 'Authorization' header or token` | The key is revoked or malformed. Re-run `set-key.sh`. If the direct `curl` to `/alpha/whoami` works but sessions still fail, the client is sending a stale cached key — this repo's proxy prefers the token file, so update it (older proxies used the client header). |
 | `MODEL_NOT_IN_PLAN` | That model needs Pro/GOAT. Stick to the `($1)` models. |
 | `400` on every request | Proxy is stale. Re-run `install.sh` to update the binary. |
 | `connection refused` on 55990 | `systemctl restart commandcode-proxy` |
